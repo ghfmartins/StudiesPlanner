@@ -1,0 +1,32 @@
+{
+  "name": "digigrotesk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "nodemon": "nodemon ./server.js",
+    "test": "mocha ./test/controllers",
+    "swagger-autogen": "node swagger.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.1",
+    "mongoose": "^5.11.2",
+    "swagger-autogen": "^2.3.4",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "chai-things": "^0.2.0",
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.6"
+  }
+}
