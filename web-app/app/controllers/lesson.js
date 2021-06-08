@@ -101,3 +101,66 @@ async function getUserLesson(user, id) {
     }
 }
 module.exports.getUserLesson = getUserLesson
+
+async function updateLesson(user, id, updateLesson) {
+    try {
+        if (!updateLesson || Object.keys(updateLesson).length === 0) return
+        if (!id) throw { code: 400, message: 'É obrigatório passar um id na requisição para atualziar uma aula específica!' }
+
+        validateUpdate(updateLesson)
+
+        return lessonRepository.updateById(user._id, id, updateLesson)
+    } catch(error) {
+        console.error(`[updateLesson] Erro ao atualizar lesson ${id} do user ${user._id} - ${user.email}. ${error.message}`)
+        throw { code: 500, message: 'Erro interno do servidor' }
+    }
+}
+module.exports.updateLesson = updateLesson
+
+function validateUpdate(update) {
+    try {
+        if (update.subject) throw { code: 400, message: 'Não é possível atualizar a disciplina da aula!' }
+        if (update.create) throw { code: 400, message: 'Não é possível atualizar a data de criação da aula!' }
+        if (update.quantity) throw { code: 400, message: 'Não é possível atualizar a quantidade de aulas!' }
+
+        if (update.realizationDays) {
+            if (update.realizationDays.length == 0) throw { code: 400, message: 'Não é possível apagar os dias da semana que a aula vai ser realizada!' }
+            update.realizationDays.forEach(realizationDay => {
+                if (!realizationDay.day || !realizationDay.start)
+                    throw { code: 400, message: 'Para atualizar os dias de realização da aula é necessário passar o dia da semana e horário de inicio de cada aula!' }
+            })
+        }
+    } catch(error) {
+        throw error
+    }
+}
+module.exports.validateUpdate = validateUpdate
+
+async function deleteLesson(user, id) {
+    try {
+        if (!id) throw { code: 400, message: 'É obrigatório passar um id na requisição para deletar uma aula específica!' }
+        return await lessonRepository.deleteById(user._id, id)
+    } catch(error) {
+        console.error(`[feleteLesson] Erro ao deletar lesson ${id} do user ${user._id} - ${user.email}. ${error.message}`)
+        throw error
+    }
+}
+module.exports.deleteLesson = deleteLesson
+
+async function deleteLessonsFromSubject(user, subjectId) {
+    try {
+        let filter = {}
+        filter['subject.id'] = subjectId
+        filter['subject.author'] = req._id
+
+        let lessons = await lessonRepository.get(filter)
+
+        for (const lesson of lessons) {
+            await lessonRepository.deleteById(user._id, lesson._id)
+        }
+    } catch(error) {
+        console.error(`[deleteClassesFromSubject] Erro ao buscar e deletar todas as classes do subject ${subjectId}, ${user._id} - ${user.email}. ${error.message}`)
+        throw error
+    }
+}
+module.exports.deleteClassesFromSubject = deleteLessonsFromSubject

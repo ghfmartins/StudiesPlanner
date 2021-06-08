@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "version": "2.30.0",
-    "title": "StudiesPlanner 1 API",
+    "title": "StudiesPlanner API",
     "description": "Utilize esta documentação para aulixio ao uso da API do sistema!"
   },
   "host": "localhost:3000",

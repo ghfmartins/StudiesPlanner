@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const middleware = require('../controllers/middleware')
 const subjectController = require('../controllers/subject')
+const examController = require('../controllers/exam')
 
 router.all('/*', middleware.authenticateByToken)
 
