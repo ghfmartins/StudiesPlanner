@@ -168,7 +168,7 @@ async function updateGrade(user, id, grades) {
         }
         return await subjectRepository.updateById(user._id, id, set)
     } catch(error) {
-        console.error(`[updateGrade] Erro ao calcular grade do subject ${id} do user ${user._id} - ${user.email}. ${error.message}`)
+        console.error(`[updateGrade] Erro ao calcular a nota do subject ${id} do user ${user._id} - ${user.email}. ${error.message}`)
         throw error
     }
 }
@@ -296,7 +296,7 @@ async function getSubjectAbsences(user, id) {
 }
 module.exports.getSubjectAbsences = getSubjectAbsences
 
-async function calculatePercentageAttendance(user, id) {
+async function calculatePercentageAbsence(user, id) {
     try {
         if (!id) throw { code: 400, message: 'É obrigatório passar um id na requisição para calcular a porcentagem de frequência em uma disciplina específica!' }
 
@@ -306,17 +306,17 @@ async function calculatePercentageAttendance(user, id) {
         let lesson = await lessonRepository.get({ 'subject.author': user._id, 'subject.id': subject._id })
         if (!lesson) throw { code: 404, message: 'Aula não encontrada!'}
 
-        let attendance = 0
+        let absence = 0
 
         let absences = await absenceRepository.get({ 'subject.author': user._id, 'subject.id': subject._id })
-        if (!absences) return attendance
+        if (!absences) return absence
 
-        attendance = ((absences.length / lesson[0].quantity) * 100).toFixed(2)
-        return attendance + " %"
+        absence = ((absences.length / lesson[0].quantity) * 100).toFixed(2)
+        return absence + " %"
     } catch(error) {
-        console.error(`[calculatePercentageAttendance] Erro ao calcular porcentagem de frequência do subject do user ${user._id} - ${user.email}. ${error.message}`)
+        console.error(`[calculatePercentageAbsence] Erro ao calcular porcentagem de frequência do subject do user ${user._id} - ${user.email}. ${error.message}`)
         if (error.code) throw error
         throw { code: 500, message: 'Erro interno do servidor' }
     }
 }
-module.exports.calculatePercentageAttendance = calculatePercentageAttendance
+module.exports.calculatePercentageAbsence = calculatePercentageAbsence
